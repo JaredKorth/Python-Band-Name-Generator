@@ -1,0 +1,179 @@
+import pandas
+import random
+import string
+
+# csv to foundational dataframe
+word_data = pandas.read_csv("Word Freq and PoS trimmed.csv")
+word_data = word_data[word_data.PoS != "Unclassified"]
+word_data = word_data.dropna()
+
+to_swap_list = []
+result_list = []
+saved_results_list = []
+complete_review_list = []
+
+
+# creating dict of DFs for parts of speech
+unique_pos_list = word_data["PoS"].unique().tolist()
+pos_dict = {}
+for pos in unique_pos_list:
+    pos_dict["{0}_df".format(pos)] = word_data[word_data.PoS == pos]
+
+
+def get_new_word(word_pos, obscurity):
+    rand_row_for_new_word = (pos_dict["{}_df".format(word_pos)].sample(n=1))
+    # pulls from all 74,186 words
+    if obscurity == 1:
+        while int(rand_row_for_new_word.FREQcount) == 1:
+            # pulls from ~60k words
+            rand_row_for_new_word = (pos_dict["{}_df".format(word_pos)].sample(n=1))
+    elif obscurity == 2:
+        while int(rand_row_for_new_word.FREQcount) < 4:
+            # pulls from ~45k words
+            rand_row_for_new_word = (pos_dict["{}_df".format(word_pos)].sample(n=1))
+    elif obscurity == 3:
+        while int(rand_row_for_new_word.FREQcount) < 100:
+            # pulls from ~12k words
+            rand_row_for_new_word = (pos_dict["{}_df".format(word_pos)].sample(n=1))
+    result_list.append(rand_row_for_new_word.Word.item())
+
+
+def get_new_num(word):
+    output_numbered_word = ''
+    for char in word:
+        get_new = char
+        if char in string.digits:
+            while get_new == char:
+                get_new = random.choice(string.digits)
+            output_numbered_word += get_new
+        elif char in string.ascii_lowercase:
+            while get_new == char:
+                get_new = random.choice(string.ascii_lowercase)
+            output_numbered_word += get_new
+        elif char in string.punctuation:
+            while get_new == char:
+                get_new = random.choice(string.punctuation)
+            output_numbered_word += get_new
+        else:
+            output_numbered_word += char
+    result_list.append(output_numbered_word)
+
+
+def band_name_morpher(obscurity):
+    result_list.clear()
+    for word in to_swap_list:
+        if word[0] == "+":
+            result_list.append(word[1:])
+        elif any(char.isdigit() for char in word):
+            get_new_num(word)
+        elif word.title() in unique_pos_list:
+            get_new_word(word.title(), obscurity)
+        elif word in word_data.Word.values:
+            word_row = word_data[word_data.Word == word]
+            word_pos = word_row.PoS.item()
+            get_new_word(word_pos, obscurity)
+        else:
+            print(f"Could not work with '{word}', please try something else")
+            fresh_band_name_morpher()
+    print()
+    print(*result_list)
+    print()
+    complete_review_list.append(result_list[:])
+    what_now = input("'s' to save this\n'r' to run again\n'n' to put in new request\n"
+                     "'v' to view saved\n'a' to view all\n'q' to quit\n").lower()
+    next_step(what_now, obscurity)
+
+
+def fresh_band_name_morpher():
+    to_swap_list.clear()
+    to_swap_list.extend(input("Give an example band name you like: ").lower().split())
+    obscurity = input("Would you like to exclude uncommon words? Type a number 0-3, 0 works with all available "
+                      "words, 3 uses only the most common: ")
+    while obscurity not in ['0', '1', '2', '3']:
+        print("\nInvalid input.")
+        obscurity = input("Type a number 0-3, 0 works with all available "
+                          "words, 3 uses only the most common: ")
+    obscurity = int(obscurity)
+    band_name_morpher(obscurity)
+
+
+def next_step(what_now, obscurity):
+    if what_now == "q":
+        quit()
+    elif what_now == "s":
+        saved_results_list.append(result_list[:])
+        if len(saved_results_list) == 1:
+            print("\nYou have 1 saved band name to review.")
+        else:
+            print(f"\nYou have {len(saved_results_list)} saved band names to review.")
+        what_now = input("'r' to run again\n'n' to put in new request\n'v' to view saved\n'q' to quit\n").lower()
+        next_step(what_now, obscurity)
+    elif what_now == "r":
+        band_name_morpher(obscurity)
+    elif what_now == "n":
+        fresh_band_name_morpher()
+    elif what_now == "v":
+        print()
+        if len(saved_results_list) == 0:
+            print("You haven't saved any band names yet.")
+            what_now = input("\n'r' to run again\n'n' to put in new request\n'a' to view all\n'q' to quit\n").lower()
+            next_step(what_now, obscurity)
+        else:
+            for band_name in saved_results_list:
+                print(*band_name)
+            what_now = input("\n'r' to run again\n'n' to put in new request\n'a' to view all\n'q' to quit\n").lower()
+            next_step(what_now, obscurity)
+    elif what_now == "a":
+        print()
+        for band_name in complete_review_list:
+            print(*band_name)
+        what_now = input("\n'r' to run again\n'n' to put in new request\n'v' to view saved\n'q' to quit\n").lower()
+        next_step(what_now, obscurity)
+    else:
+        print("Sorry, I didn't understand that.")
+        what_now = input(
+            "\n's' to save this\n'r' to run again\n'n' to put in new request\n'v' to view saved\n"
+            "'a' to view all\n'q' to quit\n").lower()
+        next_step(what_now, obscurity)
+
+
+def instructions():
+    print("""
+    Type a starting template. This can be a band name you already like,
+    a phrase, a series of parts of speech (options are: noun, verb, adjective, pronoun,
+    article, preposition, letter, number, name, determiner, conjugation, adverb, 
+    interjection), or a blend of them all. Use '+' to fix a word you know you want.
+    
+    [Please use standard words: Coldplay would be entered as cold play]
+    [Please type out numbers: U2 would be entered as u two] 
+
+    Examples of what you might enter: 
+    
+    verb noun adverb
+    +The adjective
+    name +and +the noun
+    noun +of +Australia
+
+    Be creative! Take what is generated and add/remove spaces, make it plural or singular, capitalize,
+    translate it to another language, whatever.
+
+    This program pulls from a library of ~74,000 words. Some are pretty obscure. I recommend entering
+    3 or maybe 2 when prompted about excluding words unless you want to raise eyebrows.
+
+    You can save each option to a list for later review, or recall everything that's gone by if your 
+    trigger finger is too quick. But it's all gone once you exit, so have a pencil handy.
+
+    Here we go!
+    """)
+    fresh_band_name_morpher()
+
+
+def welcome():
+    print("\nWelcome to your band name generator!")
+    if input("Would you like to read the instructions? Y or N: ").lower() == 'y':
+        instructions()
+    else:
+        fresh_band_name_morpher()
+
+
+welcome()
