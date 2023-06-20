@@ -11,7 +11,7 @@ Indie bands will find this more immediately productive than anybody looking for 
 
 
 AS A PORTFOLIO PIECE
-This is a pretty accurate demonstration of my skill level in Python. There's no mind blowing code here, but it works and it's useful.
+This is a pretty accurate demonstration of my skill level in Python. There's no mind blowing code here, but it works, it's clean, and it's useful.
 
 If you want the cleverest programmer, code golfer, LEETCoder around, that's probably not me. But if you want a data analyst who can handle some Python, I may be your man.
 
