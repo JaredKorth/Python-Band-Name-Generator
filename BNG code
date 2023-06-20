@@ -170,7 +170,7 @@ def instructions():
 
 def welcome():
     print("\nWelcome to your band name generator!")
-    if input("Would you like to read the instructions? Y or N: ").lower() == 'y':
+    if input("Would you like to read the instructions? Y or N: ").lower() in ['y', 'yes']:
         instructions()
     else:
         fresh_band_name_morpher()
