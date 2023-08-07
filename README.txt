@@ -3,11 +3,11 @@ by Jared Korth
 coded in Python 3.1
 
 ABOUT THE PROGRAM
-I wanted a good band name generator; couldn't find one, so I made one. 
+I wanted a good band name generator; couldn't find one, so I made one.
 
 Pass in a template argument according to the given instructions, and it sends back possible band names you might like. I didn't put in any hard save option, supposing that would lead to files with hundreds of potential names leaving musicians frozen in indecision rather than making music. But there is a temporary save option so you can review good names before quitting the program.
 
-Indie bands will find this more immediately productive than anybody looking for a particular vibe, but let it run for a few rounds and you'll be surprised at the usable names that come up. If nothing else, it's good for "Mad Libs" type laughs. One of my favorites during today's testing was "Insurance and the Ferocious Payments."
+Some bands will find this more immediately productive than those looking for a particular vibe, but let it run for a few rounds and you'll be surprised at the usable names that come up. If nothing else, it's good for "Mad Libs" type laughs. One of my favorites during today's testing was "Insurance and the Ferocious Payments."
 
 
 AS A PORTFOLIO PIECE
