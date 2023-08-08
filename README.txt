@@ -3,7 +3,7 @@ by Jared Korth
 coded in Python 3.1
 
 ABOUT THE PROGRAM
-I wanted a good band name generator; couldn't find one, so I made one.
+On my first day of learning to code, I was told I'd be making a band name generator. Technically that proved true, but of course the product was pretty uninspiring. I decided that once I actually knew what I was doing, I was going to write a real, useful, practical band name generator. So I did. Here it is.
 
 Pass in a template argument according to the given instructions, and it sends back possible band names you might like. I didn't put in any hard save option, supposing that would lead to files with hundreds of potential names leaving musicians frozen in indecision rather than making music. But there is a temporary save option so you can review good names before quitting the program.
 
